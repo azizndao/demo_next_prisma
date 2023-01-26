@@ -8,13 +8,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  if (req.method !== 'GET') {
+  if (req.method === 'POST') {
+    const posts = req.body
+    console.log(posts)
+  } else if (req.method !== 'GET') {
     return res
       .status(404)
       .json({ message: `Method [${req.method}] not supported` })
   }
 
+  let users = await prismaClient.user.findMany()
+
   res.status(200).json({
-    users: await prismaClient.user.findMany(),
+    users: users,
   })
 }

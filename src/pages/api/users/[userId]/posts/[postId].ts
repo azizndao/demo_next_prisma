@@ -1,33 +1,36 @@
-import { Tweet } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prismaClient } from 'prisma/client'
+import { Post } from "@prisma/client";
 
-type Data = { tweet: Tweet | null } | { message: string }
+type Data = { tweet: Post | null } | { message: string }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
   const userId = parseInt(req.query.userId as string)
-  const id = parseInt(req.query.tweetId as string)
+  const id = parseInt(req.query.postId as string)
 
-  let tweet: Tweet | null = null
+  let tweet: Post | null = null
 
   if (req.method === 'GET') {
     // Get Tweet
-    tweet = await prismaClient.tweet.findFirst({
+    tweet = await prismaClient.post.findFirst({
       where: { userId, id },
     })
   } else if (req.method === 'PUSH') {
     // Update Tweet
-    const content = req.body.content as string
-    tweet = await prismaClient.tweet.update({
+    tweet = await prismaClient.post.update({
       where: { id },
-      data: { content },
+      data: {
+        title: req.body.title,
+        body: req.body.body,
+        tags: req.body.tags,
+      },
     })
   } else if (req.method === 'DELETE') {
     // Get Tweet
-    tweet = await prismaClient.tweet.delete({
+    tweet = await prismaClient.post.delete({
       where: { id },
     })
   } else {

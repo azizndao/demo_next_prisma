@@ -1,8 +1,8 @@
-import { Tweet } from '@prisma/client'
+import { Post } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prismaClient } from 'prisma/client'
 
-type ResponseData = { tweets: Tweet[] } | { message: string }
+type ResponseData = { posts: Post[] } | { message: string }
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,6 +14,7 @@ export default async function handler(
       .json({ message: `Method [${req.method}] not supported` })
   }
 
-  const tweets = await prismaClient.tweet.findMany()
-  res.status(200).json({ tweets })
+  const posts = await prismaClient.post.findMany()
+
+  res.status(200).json({ posts })
 }

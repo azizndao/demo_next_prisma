@@ -8,7 +8,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  if (req.method !== 'GET') {
+  if (req.method === 'POST') {
+    const user = req.body as User[]
+    prismaClient.user.create({ data: user[0] })
+  } else if (req.method !== 'GET') {
     return res
       .status(404)
       .json({ message: `Method [${req.method}] not supported` })
