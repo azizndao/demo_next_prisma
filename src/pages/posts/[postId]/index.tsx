@@ -1,4 +1,5 @@
-import { PostWithInfos } from '@/types'
+import { PostWithInfos } from '@/types/types'
+import { notFound } from 'next/navigation'
 
 export default async function PostPage({
   params,
@@ -62,7 +63,7 @@ async function getPost({ id }: { id: number }) {
   const response = await fetch(`http://localhost:3000/api/posts/${id}`)
 
   if (!response.ok) {
-    console.log(response.status)
+    notFound()
   }
 
   const data: { post: PostWithInfos } = await response.json()
