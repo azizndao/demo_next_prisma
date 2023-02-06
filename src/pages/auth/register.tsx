@@ -1,11 +1,31 @@
-import React, { FormEvent, useRef } from "react";
-import SignInForm from "@/components/auth/SignInForm";
+import { RegistrationForm } from '@/components/auth/RegistrationForm'
+import authOptions from '@/pages/api/auth/[...nextauth]'
+import { GetServerSideProps, NextPage } from 'next'
+import { getServerSession } from 'next-auth'
+import { getCsrfToken } from 'next-auth/react'
 
-export default function SignUpPage() {
+export default function RegistrationPage({
+  csrfToken,
+}: NextPage & { csrfToken: string }) {
+  return <RegistrationForm csrfToken={csrfToken} />
+}
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions)
+  console.log(session)
 
-  return <div>
-    <h1>Sign In</h1>
-    <SignInForm/>
-  </div>
+  if (session) {
+    return {
+      redirect: {
+        destination: '/auth/me',
+        permanent: true,
+      },
+    }
+  }
+
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context),
+    },
+  }
 }

@@ -1,0 +1,16 @@
+export const PrismaUserSelection = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  maidenName: true,
+  username: true,
+  age: true,
+  gender: true,
+  email: true,
+  phone: true,
+  image: true,
+  ip: true,
+  macAddress: true,
+  university: true,
+  userAgent: true,
+}

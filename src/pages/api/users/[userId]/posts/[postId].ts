@@ -1,6 +1,6 @@
+import { Post } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prismaClient } from 'prisma/client'
-import { Post } from "@prisma/client";
+import prismaClient from '@/utils/client'
 
 type Data = { tweet: Post | null } | { message: string }
 
@@ -8,8 +8,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const userId = parseInt(req.query.userId as string)
-  const id = parseInt(req.query.postId as string)
+  const userId = req.query.userId as string
+  const id = req.query.postId as string
 
   let tweet: Post | null = null
 

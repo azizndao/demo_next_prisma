@@ -1,16 +1,9 @@
 import { PostWithInfos } from '@/types/types'
 import { notFound } from 'next/navigation'
+import { GetServerSideProps } from "next";
+import prismaClient from "@/utils/client";
 
-export default async function PostPage({
-  params,
-}: {
-  params: { postId: number }
-}) {
-  const { post } = await getPost({ id: params.postId })
-
-  if (post === null) {
-    return <h1 className="text-4xl font-bold">404. Post not found</h1>
-  }
+export default function PostPage({ post }: { post: PostWithInfos }) {
 
   const user = post.user
 
@@ -59,14 +52,56 @@ export default async function PostPage({
   )
 }
 
-async function getPost({ id }: { id: number }) {
-  const response = await fetch(`http://localhost:3000/api/posts/${id}`)
 
-  if (!response.ok) {
-    notFound()
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+
+  if (!params) {
+    return {
+      notFound: true
+    }
   }
 
-  const data: { post: PostWithInfos } = await response.json()
+  let id = params[ 'postId' ] as string;
 
-  return data
+  const post = await prismaClient.post.findUnique({
+      where: { id },
+      include: {
+        comments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                image: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                maidenName: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            image: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            maidenName: true,
+          },
+        },
+      }
+    },
+  )
+
+  if (!post) {
+    return {
+      notFound: true
+    }
+  }
+
+  return {
+    props: { post }
+  }
 }
+

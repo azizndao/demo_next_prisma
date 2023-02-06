@@ -1,6 +1,6 @@
 import { Post } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prismaClient } from 'prisma/client'
+import prismaClient from '@/utils/client'
 
 type ResponseData = { data: Post | Post[] } | { message: string }
 
@@ -8,7 +8,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const userId = parseInt(req.query.userId as string)
+  const userId = req.query.userId as string
 
   if (req.method === 'GET') {
     const tweets = await prismaClient.post.findMany({

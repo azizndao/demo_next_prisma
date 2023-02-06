@@ -1,6 +1,6 @@
 import { Post } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prismaClient } from 'prisma/client'
+import prismaClient from '@/utils/client'
 
 type ResponseData = { post: Post | null } | { message: string }
 
@@ -45,6 +45,10 @@ export default async function handler(
       },
     },
   })
+
+  if (!post) {
+    return res.status(404).json({ message: 'Not found' })
+  }
 
   res.status(200).json({ post })
 }

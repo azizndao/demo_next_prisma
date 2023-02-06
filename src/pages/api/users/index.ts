@@ -1,6 +1,7 @@
-import { User } from '@prisma/client'
+import { PrismaUserSelection } from '@/utils/select'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prismaClient } from 'prisma/client'
+import { User } from 'next-auth'
+import prismaClient from '@/utils/client'
 
 type ResponseData = { users: User[] } | { message: string }
 
@@ -17,9 +18,11 @@ export default async function handler(
       .json({ message: `Method [${req.method}] not supported` })
   }
 
-  let users = await prismaClient.user.findMany()
+  const users = await prismaClient.user.findMany({
+    select: PrismaUserSelection,
+  })
 
   res.status(200).json({
-    users: users,
+    users: users as User[],
   })
 }

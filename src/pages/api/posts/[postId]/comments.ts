@@ -1,6 +1,6 @@
 import { Comment } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prismaClient } from 'prisma/client'
+import prismaClient from '@/utils/client'
 
 export type GetPostResponse = { comments: Comment[] } | { message: string }
 

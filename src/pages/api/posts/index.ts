@@ -1,6 +1,6 @@
 import { Post } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prismaClient } from 'prisma/client'
+import prismaClient from '@/utils/client'
 
 type ResponseData = { posts: Post[] } | { message: string }
 
